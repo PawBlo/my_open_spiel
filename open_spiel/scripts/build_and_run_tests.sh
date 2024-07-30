@@ -35,7 +35,7 @@
 # Load argslib for parsing of command-line arguments.
 source $(dirname "$0")/argslib.sh
 
-ArgsLibAddArg virtualenv bool true "Whether to use virtualenv. We enter a virtualenv (stored in venv/) only if this flag is true and we are not already in one."
+ArgsLibAddArg virtualenv bool false "Whether to use virtualenv. We enter a virtualenv (stored in venv/) only if this flag is true and we are not already in one."
 # We define a string and not a boolean, because we can to know whether this flag
 # has been explicitly set or not.
 ArgsLibAddArg install string "default" 'Whether to install requirements.txt packages. Doing it is slow. By default, it will be true (a) the first-time a virtualenv is being setup (if system_wide_packages is false), (b) if the user overrides it with "true".'

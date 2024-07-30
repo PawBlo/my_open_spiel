@@ -33,8 +33,8 @@ namespace tic_tac_toe {
 
 // Constants.
 inline constexpr int kNumPlayers = 2;
-inline constexpr int kNumRows = 3;
-inline constexpr int kNumCols = 3;
+inline constexpr int kNumRows = 5;
+inline constexpr int kNumCols = 5;
 inline constexpr int kNumCells = kNumRows * kNumCols;
 inline constexpr int kCellStates = 1 + kNumPlayers;  // empty, 'x', and 'o'.
 

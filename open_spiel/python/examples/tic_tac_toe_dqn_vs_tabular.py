@@ -41,12 +41,12 @@ flags.DEFINE_boolean(
 def pretty_board(time_step):
   """Returns the board in `time_step` in a human readable format."""
   info_state = time_step.observations["info_state"][0]
-  x_locations = np.nonzero(info_state[9:18])[0]
-  o_locations = np.nonzero(info_state[18:])[0]
-  board = np.full(3 * 3, ".")
+  x_locations = np.nonzero(info_state[25:50])[0]
+  o_locations = np.nonzero(info_state[50:])[0]
+  board = np.full(5 * 5, ".")
   board[x_locations] = "X"
   board[o_locations] = "0"
-  board = np.reshape(board, (3, 3))
+  board = np.reshape(board, (5, 5))
   return board
 
 
@@ -93,22 +93,22 @@ def main(_):
   state_size = env.observation_spec()["info_state"][0]
   num_actions = env.action_spec()["num_actions"]
 
-  hidden_layers_sizes = [32, 32]
-  replay_buffer_capacity = int(1e4)
+  hidden_layers_sizes = [64, 64]
+  replay_buffer_capacity = int(1e3)
   train_episodes = FLAGS.num_episodes
   loss_report_interval = 1000
-
+  print(state_size)
   with tf.Session() as sess:
     dqn_agent = dqn.DQN(
         sess,
-        player_id=0,
+        player_id=1,
         state_representation_size=state_size,
         num_actions=num_actions,
         hidden_layers_sizes=hidden_layers_sizes,
         replay_buffer_capacity=replay_buffer_capacity)
     tabular_q_agent = tabular_qlearner.QLearner(
-        player_id=1, num_actions=num_actions)
-    agents = [dqn_agent, tabular_q_agent]
+        player_id=0, num_actions=num_actions)
+    agents = [tabular_q_agent, dqn_agent ]
 
     sess.run(tf.global_variables_initializer())
 
@@ -132,11 +132,10 @@ def main(_):
         random_agent.RandomAgent(player_id=idx, num_actions=num_actions)
         for idx in range(num_players)
     ]
-    r_mean = eval_against_random_bots(env, agents, random_agents, 1000)
+    r_mean = eval_against_random_bots(env, agents, agents, 1000)
     logging.info("Mean episode rewards: %s", r_mean)
 
-    if not FLAGS.interactive_play:
-      return
+    
 
     # Play from the command line against the trained DQN agent.
     human_player = 1
@@ -147,7 +146,7 @@ def main(_):
         player_id = time_step.observations["current_player"]
         if player_id == human_player:
           agent_out = agents[human_player].step(time_step, is_evaluation=True)
-          logging.info("\n%s", agent_out.probs.reshape((3, 3)))
+          logging.info("\n%s", agent_out.probs.reshape((5, 5)))
           logging.info("\n%s", pretty_board(time_step))
           action = command_line_action(time_step)
         else:

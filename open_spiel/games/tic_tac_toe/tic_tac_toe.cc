@@ -82,14 +82,33 @@ std::string StateToString(CellState state) {
 bool BoardHasLine(const std::array<CellState, kNumCells>& board,
                   const Player player) {
   CellState c = PlayerToState(player);
-  return (board[0] == c && board[1] == c && board[2] == c) ||
-         (board[3] == c && board[4] == c && board[5] == c) ||
-         (board[6] == c && board[7] == c && board[8] == c) ||
-         (board[0] == c && board[3] == c && board[6] == c) ||
-         (board[1] == c && board[4] == c && board[7] == c) ||
-         (board[2] == c && board[5] == c && board[8] == c) ||
-         (board[0] == c && board[4] == c && board[8] == c) ||
-         (board[2] == c && board[4] == c && board[6] == c);
+ 
+
+    // Check rows
+    for (int i = 0; i < 5; ++i) {
+        if (board[i * 5] == c && board[i * 5 + 1] == c && board[i * 5 + 2] == c &&
+            board[i * 5 + 3] == c && board[i * 5 + 4] == c) {
+            return true;
+        }
+    }
+
+    // Check columns
+    for (int i = 0; i < 5; ++i) {
+        if (board[i] == c && board[5 + i] == c && board[10 + i] == c &&
+            board[15 + i] == c && board[20 + i] == c) {
+            return true;
+        }
+    }
+
+    // Check diagonals
+    if (board[0] == c && board[6] == c && board[12] == c && board[18] == c && board[24] == c) {
+        return true;
+    }
+    if (board[4] == c && board[8] == c && board[12] == c && board[16] == c && board[20] == c) {
+        return true;
+    }
+
+    return false;
 }
 
 void TicTacToeState::DoApplyAction(Action move) {

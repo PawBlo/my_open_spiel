@@ -38,7 +38,7 @@ def main(unused_argv):
       train_batch_size=128,
       replay_buffer_size=2**14,
       replay_buffer_reuse=4,
-      max_steps=25,
+      max_steps=3,
       checkpoint_freq=25,
 
       actors=4,
